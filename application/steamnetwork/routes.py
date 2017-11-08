@@ -9,7 +9,7 @@ from steamnetwork import app
 def route_home():
     return render_template("pages/index.html", title="index", active="Home")
     
-@app.route("/about")
+@app.route("/about/")
 def route_about():
     return render_template("pages/about.html", title="index", active="About")
 
