@@ -1,0 +1,21 @@
+version: '2.1'
+services:
+
+### Application Code Container
+
+  steamnetwork_application:
+      command: "python /app/server.py"
+      container_name: steamnetwork_app
+#you can comment out the next line
+      restart: always
+      build: ./application
+      image: steamnetwork/steamnetwork_app
+      volumes:
+          - ./application:/app
+#          - .:/source
+      env_file:
+          - ./application/.env
+      ports:
+# change the local-port
+# [local-ip]:[local-port]:[container-port]
+          - "127.0.0.1:8000:5000"
