@@ -16,4 +16,5 @@ A docker-based Steam friends network app.
     - The website is up at localhost:[port-you-specified-in-docker-compose-yml]
     
 >Note:
-This configuration allows you to have multiple configurations, for example in development/production you'll have to set `DEBUG=False` in `application/.env`
+This configuration allows you to have multiple configurations, for example in development/production you'll have to set `DEBUG=False` in `application/.env`.
+Be careful not to put confidential stuff in any file ending with "example", as they are supposed to be commited.
