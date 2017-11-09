@@ -16,7 +16,7 @@ A docker-based Steam friends network app.
     - `cp application/.env-example application/.env`
     - Change the `public` options in `application/.env`
 3. Build and run the container
-    - `docker-compose up`
+    - `sudo docker-compose up`
 4. ???
 5. Profit
     - The website is up at localhost:[port-you-specified-in-docker-compose-yml]
