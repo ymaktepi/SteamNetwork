@@ -7,6 +7,8 @@ A docker-based Steam friends network app.
 ### Docker
 #### Prerequisites
 - `docker`
+- [docker Post-installation](https://docs.docker.com/engine/installation/linux/linux-postinstall/)
+    - Must be able to launch docker without using the sudo command
 - `docker-compose`
 #### How-To
 1. Configure docker
@@ -16,7 +18,7 @@ A docker-based Steam friends network app.
     - `cp application/.env-example application/.env`
     - Change the `public` options in `application/.env`
 3. Build and run the container
-    - `sudo docker-compose up`
+    - `docker-compose up`
 4. ???
 5. Profit
     - The website is up at localhost:[port-you-specified-in-docker-compose-yml]
