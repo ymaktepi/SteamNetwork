@@ -1,4 +1,4 @@
-FROM python:3.5.3
+FROM python:3.5
 MAINTAINER Nicolas Huguenin "nichuguen@gmail.com"
 
 WORKDIR /app

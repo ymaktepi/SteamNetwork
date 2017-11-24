@@ -23,6 +23,34 @@ def get_user(user_name):
         steam_user = user.SteamUser(userurl=user_name)
     return steam_user
 
+def user_game_to_dict(steam_game):
+    return {
+        'app_id': steam_game.appid,
+        'playtime': steam_game.achievements
+    }
+
+def user_to_dict(steam_user):
+    return {
+        'img': steam_user.avatar_full,
+        'name': steam_user.name,
+        'real_name': steam_user.real_name,
+        'games': [user_game_to_dict(game) for game in steam_user.games]
+    }
+
+
+@app.route("/api/allinfos/<name>")
+def route_api_all_infos(name):
+    try:
+        steam_user = get_user(name)
+        if steam_user is None:
+            return jsonify(get_response_error('User %s not found' % str(name)))
+
+        dic = get_response_ok()
+        dic['user'] = user_to_dict(steam_user)
+        return jsonify(dic)
+    except Exception as ex:
+        return jsonify(get_response_error("An error occured %s" % ex))
+
 
 @app.route("/api/user/<name>")
 def route_api_user(name):
