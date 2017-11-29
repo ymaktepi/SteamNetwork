@@ -1,6 +1,62 @@
 # -*- coding: utf-8 -*-
 
+import json
+import sys
+import time
+import pickle
 import requests
+
+
+from steamnetwork import redis_store
+
+def flask_print(*args, **kwargs):
+    print(*args, **kwargs)
+    sys.stdout.flush()
+    
+def now_millis():
+    return time.time()*1000
+
+def cached_dict_timeout(timeout):
+    def cached_dict(function):
+        dic = {}
+        def wrapper(*args):
+            name = function.__name__+'_'.join(args)
+            flask_print("callingcached"+name)
+            response = None
+            if name in dic:
+                response_tuple = dic[name]
+                if now_millis() - response_tuple[0] < timeout:
+                    flask_print("getting cached")
+                    return response_tuple[1]
+            flask_print("out of date")
+            response = function(*args)
+            dic[name] = (now_millis(), response)
+            flask_print(response)
+            return response
+        return wrapper
+    return cached_dict
+
+def cached_redis_timeout(timeout):
+    def cached_redis(function):
+        def wrapper(*args):
+            name = "test"+function.__name__+'_'.join(args)
+            flask_print("callingcached: "+name)
+            response = redis_store.get(name)
+            if response is not None:
+                response_tuple = pickle.loads(response)
+                if now_millis() - response_tuple[0] < timeout:
+                    flask_print("getting cached")
+                    return response_tuple[1]
+            flask_print("out of date")
+            response = function(*args)
+            redis_store.set(name, pickle.dumps((now_millis(), response)))
+            flask_print(response)
+            return response
+        return wrapper
+    return cached_redis_timeout
+
+cached_timeout = cached_dict_timeout
+
 
 class ApiWrapperException(Exception):
 
@@ -28,6 +84,7 @@ class ApiWrapper(object):
             ApiWrapper._KEY = key
 
     @staticmethod
+    @cached_timeout(1000000)
     def get_user_id(user_id_or_url):
         """
         returns the steam id (64bits int) for the user
@@ -36,7 +93,7 @@ class ApiWrapper(object):
         # TODO: better check of the first case (int(...))
         try:
             user_id = int(user_id_or_url)
-            return user_id
+            return str(user_id)
         except:
             try:
                 json_response = ApiWrapper._make_request(
@@ -50,6 +107,7 @@ class ApiWrapper(object):
                     "Could not get the id for %s (%s)" % (user_id_or_url, str(be)))
 
     @staticmethod
+    #@cached
     def get_user_profiles(user_ids):
         """
         returns the user profile as found in the GetPlayerSummaries Steam API route.
@@ -60,6 +118,8 @@ class ApiWrapper(object):
         try:
             user_ids = [int(user_id) for user_id in user_ids]
         except:
+            flask_print("user_ids")
+            flask_print(user_ids)
             raise ApiWrapperException("The user_ids must be integers")
         list_profiles=[]
         n = 100 #the steam api accepts maximum 100 users in this query
@@ -70,6 +130,7 @@ class ApiWrapper(object):
 
 
     @staticmethod
+    #   @cached
     def get_friend_list(user_id):
         '''
             returns a list of user_ids, representing each friend the user has
@@ -80,9 +141,19 @@ class ApiWrapper(object):
         json_friend_list = ApiWrapper._make_request("ISteamUser", "GetFriendList", "v0001" , steamid=user_id)
         return [friend['steamid'] for friend in json_friend_list['friendslist']['friends']]
 
-
+        
     @staticmethod
-    def get_owned_games(user_id, include_appinfo=None):
+    @cached_timeout(1000000)
+    def get_owned_games_with_appinfo(user_id):
+        return ApiWrapper._get_owned_games(user_id, include_appinfo=True)
+    
+    @staticmethod
+    @cached_timeout(1000000)
+    def get_owned_games_without_appinfo(user_id):
+        return ApiWrapper._get_owned_games(user_id, include_appinfo=False)
+    
+    @staticmethod
+    def _get_owned_games(user_id, include_appinfo=None):
         '''
             returns a list of games, as described in the GetOwnedGames Steam API route
 
@@ -98,7 +169,6 @@ class ApiWrapper(object):
             return json_owned_list['response']['games']
         else:
             return []
-
 
     @staticmethod
     def _make_request(category, method, version, **params):

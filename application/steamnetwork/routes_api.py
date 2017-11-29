@@ -4,7 +4,7 @@
 from flask import Flask, jsonify
 
 from steamnetwork import app
-from .api.api_wrapper import ApiWrapper
+from .api_wrapper import ApiWrapper
 
 
 def get_response_ok():
@@ -43,12 +43,12 @@ def route_api_all_infos(name):
     try:
         steam_id = ApiWrapper.get_user_id(name)
         user_profile = ApiWrapper.get_user_profiles(steam_id)[0]
-        user_games = ApiWrapper.get_owned_games(steam_id, include_appinfo=True)
+        user_games = ApiWrapper.get_owned_games_with_appinfo(steam_id)
         friend_list = ApiWrapper.get_friend_list(steam_id)
         friend_list_profiles = ApiWrapper.get_user_profiles(friend_list)
         friend_list_profiles = {user['steamid']: user for user in friend_list_profiles}
         friend_games = {
-                steam_id: ApiWrapper.get_owned_games(steam_id, include_appinfo=False) for steam_id in friend_list
+                steam_id: ApiWrapper.get_owned_games_without_appinfo(steam_id) for steam_id in friend_list
                 }
 
         response = get_response_ok()
