@@ -59,5 +59,15 @@ def route_api_all_infos(name):
     except BaseException as be:
         return json_response_error(str(be))
 
+@app.route("/api/validate_user/<name>")
+def route_validate_user(name):
+    try:
+        steam_id = ApiWrapper.get_user_id(name)
+        response = get_response_ok()
+        response["steam_id"] = steam_id
+        return jsonify(response)
+    except BaseException as be:
+        return json_response_error(str(be))
+    
 if __name__ == "__main__":
     app.run(debug=True, host='0.0.0.0')

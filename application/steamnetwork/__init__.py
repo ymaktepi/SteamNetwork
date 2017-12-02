@@ -12,7 +12,6 @@ app.config['REDIS_DB'] = 0
 
 redis_store = Redis(app)
 
-
 import steamnetwork.routes_api
 import steamnetwork.routes
 import steamnetwork.errors
