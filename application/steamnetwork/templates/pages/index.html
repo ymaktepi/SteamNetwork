@@ -1,10 +1,20 @@
-
-{% extends "base/base.html" %}
-
-{% block title %} Index {% endblock title %}
-
-{% block page_title %} Index {% endblock page_title %}
-
+{% extends "base/base.html" %} 
+{% block title %} SteamNetwork {% endblock title %} 
+{% block page_title %} SteamNetwork {% endblock page_title %} 
+{% block page_subtitle %} Welcome {% endblock page_subtitle %} 
 {% block main %}
-Here we should have some content in the index page.
+<div id="app1" class="row justify-content-center" > 
+    <div v-if='state === "UserPicking"'>
+        <input v-model="user_id" v-on:submit="buttonIdClicked" placeholder="Enter your Steam id">
+        <button v-on:click="buttonIdClicked">Find me some friends please.</button>
+    </div >
+    <div v-else-if='state === "Loading"'>
+        print loading
+    </div>
+</div>
+
 {% endblock main %}
+
+{% block extrafooter %}
+<script type="text/javascript" src="{{url_for('static', filename='js/index.js')}}"></script>
+{% endblock extrafooter %}
