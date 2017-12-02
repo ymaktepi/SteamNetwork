@@ -10,8 +10,8 @@
 }
 
 .jumbotron {
-    padding-top: 6rem;
-    padding-bottom: 6rem;
+    padding-top: 3rem;
+    padding-bottom: 1rem;
     margin-bottom: 0;
     background-color: #fff;
 }
@@ -28,6 +28,11 @@ body {
   display: flex;
   min-height: 100vh;
   flex-direction: column;
+}
+
+[v-cloak]
+{
+    display: none;
 }
 
 .container {
