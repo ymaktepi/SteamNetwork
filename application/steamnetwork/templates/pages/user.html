@@ -1,0 +1,21 @@
+{% extends "base/base.html" %}
+{% block title %} Loading {% endblock title %}
+{% block page_title %} Loading your profile {% endblock page_title %}
+{% block page_subtitle %}  {% endblock page_subtitle %}
+{% block main %}
+
+<script>var name = "{{name}}";</script>
+
+<div id="user" class="row justify-content-center" >
+  <div v-if='state === "loading"'>
+  </div>
+  <div v-if='state === "loaded"'>
+    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+  </div>
+</div>
+{% endblock main %}
+
+{% block extrafooter %}
+  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+  <script type="text/javascript" src="{{url_for('static', filename='js/user.js')}}"></script>
+{% endblock extrafooter %}

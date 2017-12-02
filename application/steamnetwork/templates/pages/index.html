@@ -1,9 +1,9 @@
-{% extends "base/base.html" %} 
-{% block title %} SteamNetwork {% endblock title %} 
-{% block page_title %} SteamNetwork {% endblock page_title %} 
-{% block page_subtitle %} Welcome {% endblock page_subtitle %} 
+{% extends "base/base.html" %}
+{% block title %} SteamNetwork {% endblock title %}
+{% block page_title %} SteamNetwork {% endblock page_title %}
+{% block page_subtitle %} Welcome {% endblock page_subtitle %}
 {% block main %}
-<div id="app1" class="row justify-content-center" > 
+<div id="app1" class="row justify-content-center" >
     <div v-if='state === "UserPicking"'>
         <input v-model="user_id" v-on:submit="buttonIdClicked" placeholder="Enter your Steam id">
         <button v-on:click="buttonIdClicked">Find me some friends please.</button>
