@@ -3,13 +3,28 @@
 {% block page_title %} SteamNetwork {% endblock page_title %}
 {% block page_subtitle %} Welcome {% endblock page_subtitle %}
 {% block main %}
-<div id="app1" class="row justify-content-center" >
-    <div v-if='state === "UserPicking"'>
-        <input v-model="user_id" v-on:submit="buttonIdClicked" placeholder="Enter your Steam id">
-        <button v-on:click="buttonIdClicked">Find me some friends please.</button>
+
+<div id="app1" class="row " > 
+    <div v-if='state === "userPicking"' class="container" >
+        <div class="row alert alert-danger" v-if="error" v-cloak>
+            User with ID: "[[ user_id ]]" could not be found.
+        </div>
+        <div class="row">
+        <input v-model="user_id" v-on:keydown="clearError" v-on:keyup.enter="buttonIdClicked" placeholder="Enter your Steam ID" class="col-12 col-sm-6 col-xs-12 col-md-4 col-md-offset-2 ">
+        <button v-on:click="buttonIdClicked" class="btn  col-12 col-sm-6 col-xs-12 col-md-4 ">Find me some friends please.</button>
+        </div>
     </div >
-    <div v-else-if='state === "Loading"'>
-        print loading
+    <div v-else-if='state === "loading"' v-cloak>
+        <!--
+        See static/css/loading.css for the licensing.
+        See also: https://github.com/tobiasahlin/SpinKit
+        -->
+        <div class="sk-folding-cube">
+          <div class="sk-cube1 sk-cube"></div>
+          <div class="sk-cube2 sk-cube"></div>
+          <div class="sk-cube4 sk-cube"></div>
+          <div class="sk-cube3 sk-cube"></div>
+        </div>
     </div>
 </div>
 
