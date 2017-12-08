@@ -17,7 +17,7 @@
             <div class="sk-cube3 sk-cube"></div>
         </div>
     </div>
-    <div v-if='state === "loaded"'>
+    <div v-if='state === "loaded"' v-cloak>
         <div id="filters">
             <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateView">
             <label for="twoWeeks">2 last weeks</label>
