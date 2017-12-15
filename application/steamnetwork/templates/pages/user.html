@@ -1,21 +1,45 @@
-{% extends "base/base.html" %}
-{% block title %} Loading {% endblock title %}
-{% block page_title %} Loading your profile {% endblock page_title %}
-{% block page_subtitle %}  {% endblock page_subtitle %}
-{% block main %}
+{% extends "base/base.html" %} {% block title %} Loading {% endblock title %} {% block page_title %} Loading your profile {% endblock page_title %} {% block page_subtitle %} {% endblock page_subtitle %} {% block main %}
 
-<script>var name = "{{name}}";</script>
+<script>
+    var name = "{{name}}";
+</script>
 
-<div id="user" class="row justify-content-center" >
-  <div v-if='state === "loading"'>
-  </div>
-  <div v-if='state === "loaded"'>
-    <div id="chartContainer" style="height: 370px; width: 100%;"></div>
-  </div>
+<div id="user" class="row justify-content-center">
+    <div v-if='state === "loading"'>
+        <!--
+    See static/css/loading.css for the licensing.
+    See also: https://github.com/tobiasahlin/SpinKit
+    -->
+        <div class="sk-folding-cube">
+            <div class="sk-cube1 sk-cube"></div>
+            <div class="sk-cube2 sk-cube"></div>
+            <div class="sk-cube4 sk-cube"></div>
+            <div class="sk-cube3 sk-cube"></div>
+        </div>
+    </div>
+    <div v-if='state === "loaded"' v-cloak>
+        <div id="filters">
+            <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateViewFilter">
+            <label for="twoWeeks">2 last weeks</label>
+            <br>
+            <input type="radio" id="global" value="false" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateViewFilter">
+            <label for="global">global time</label>
+            <br>
+            <br>
+            <br>
+            <input type="radio" id="players" value="true" v-model="isPlayer" v-on:change="updateViewFilter">
+            <label for="players">Number of players</label>
+            <br>
+            <input type="radio" id="hours" value="false" v-model="isPlayer" v-on:change="updateViewFilter">
+            <label for="hours">Hours played</label>
+            <br>
+            <label for="nbGames">Number of games:  [[currentSelectedMaxGames]]/[[totalMaxGames]]</label>
+            <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter"> 
+        </div>
+        <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+    </div>
 </div>
-{% endblock main %}
-
-{% block extrafooter %}
-  <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
-  <script type="text/javascript" src="{{url_for('static', filename='js/user.js')}}"></script>
+{% endblock main %} {% block extrafooter %}
+<script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
+<script type="text/javascript" src="{{url_for('static', filename='js/user.js')}}"></script>
 {% endblock extrafooter %}
