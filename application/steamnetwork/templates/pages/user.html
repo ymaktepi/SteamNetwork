@@ -34,12 +34,16 @@
             <label for="hours">Hours played</label>
             <br>
             <label for="nbGames">Number of games:  [[currentSelectedMaxGames]]/[[totalMaxGames]]</label>
-            <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter"> 
+            <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter">
         </div>
         <div id="chartContainer" style="height: 370px; width: 100%;"></div>
+        <svg class="chartd3">
+        </svg>
+
     </div>
 </div>
 {% endblock main %} {% block extrafooter %}
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script src="https://canvasjs.com/assets/script/canvasjs.min.js"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/user.js')}}"></script>
 {% endblock extrafooter %}

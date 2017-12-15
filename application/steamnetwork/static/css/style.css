@@ -38,3 +38,15 @@ body {
 .container {
   flex: 1;
 }
+
+
+
+.chartd3 rect {
+  fill: steelblue;
+}
+
+.chartd3 text {
+  fill: red;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
