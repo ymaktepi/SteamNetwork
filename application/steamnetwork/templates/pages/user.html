@@ -19,15 +19,22 @@
     </div>
     <div v-if='state === "loaded"' v-cloak>
         <div id="filters">
-            <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateView">
+            <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateViewFilter">
             <label for="twoWeeks">2 last weeks</label>
             <br>
-            <input type="radio" id="global" value="false" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateView">
+            <input type="radio" id="global" value="false" v-model="isPlaytimeRangeTwoWeeks" v-on:change="updateViewFilter">
             <label for="global">global time</label>
             <br>
-            <span>Picked: {{ picked }}</span>
-            <label for="maxGame">Volume</label>
-            <input v-model="maxGame" type="range" min="0" max="100" value="50" id="maxGame" step="1" v-on:change="updateView"> [[maxGame]]
+            <br>
+            <br>
+            <input type="radio" id="players" value="true" v-model="isPlayer" v-on:change="updateViewFilter">
+            <label for="players">Number of players</label>
+            <br>
+            <input type="radio" id="hours" value="false" v-model="isPlayer" v-on:change="updateViewFilter">
+            <label for="hours">Hours played</label>
+            <br>
+            <label for="nbGames">Number of games:  [[currentSelectedMaxGames]]/[[totalMaxGames]]</label>
+            <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter"> 
         </div>
         <div id="chartContainer" style="height: 370px; width: 100%;"></div>
     </div>

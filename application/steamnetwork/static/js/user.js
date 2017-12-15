@@ -10,20 +10,37 @@ var app = new Vue({
         gameidToGameMap: undefined,
         dataPoints: undefined,
         chart: undefined,
-        maxGame: 0,
+        totalMaxGames: 0,
+        currentSelectedMaxGames: undefined,
         isPlaytimeRangeTwoWeeks: "true",
+        isPlayer: "true",
         data: undefined,
     },
     methods: {
-        updateView: function() {
-          if(app.isPlaytimeRangeTwoWeeks)
-          {
-            app.chart.options.data[0].dataPoints = app.data.get("playtime_2_weeks");
-          }
-          else {
-            app.chart.options.data[0].dataPoints = app.data.get("playtime_total");
-          }
-          app.chart.render();
+        updateViewFilter: function(event) {
+            let mapName = "";
+            if (app.isPlayer === 'true') {
+                mapName += "friends";
+            } else {
+                mapName += "playtime";
+            }
+
+            if (app.isPlaytimeRangeTwoWeeks === 'true') {
+                mapName += "_2_weeks";
+            } else {
+                mapName += "_total";
+            }
+            console.log(mapName)
+            let len = app.data.get(mapName).length;
+            app.totalMaxGames = len;
+            let begin = len - app.currentSelectedMaxGames;
+            let end = len;
+            app.chart.options.data[0].dataPoints = app.data.get(mapName).slice(begin, end);
+            app.chart.render();
+
+            $('#nbGames').prop({
+                'max': len
+            });
         }
     }
 });
@@ -60,16 +77,16 @@ function populateGameidToGameMap() {
 }
 
 function populateData() {
-    var listKeys = ["playtime_2_weeks", "playtime_total", "friends_2_weeks", "friends_total"];
+    let listKeys = ["playtime_2_weeks", "playtime_total", "friends_2_weeks", "friends_total"];
     app.data = new Map();
-    var map = new Map();
+    let map = new Map();
     listKeys.forEach(key => app.data.set(key, new Array()));
     listKeys.forEach(key => map.set(key, new Map()));
 
     app.rawdata.friends.forEach(friend => {
         friend.games.forEach(game => {
             if (app.gameidToGameMap.has(game.app_id)) {
-                var gameName = app.gameidToGameMap.get(game.app_id).name;
+                let gameName = app.gameidToGameMap.get(game.app_id).name;
                 addIfExist(map.get("playtime_2_weeks"), gameName, game.playtime_2_weeks);
                 addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
                 if (game.playtime_2_weeks > 0) {
@@ -89,8 +106,15 @@ function populateData() {
         }));
     });
     listKeys.forEach(keyMap => {
-      app.data.get(keyMap).sort((a, b) => a.y - b.y);
+        app.data.get(keyMap).sort((a, b) => a.y - b.y);
     });
+    listKeys.forEach(keyMap => {
+        let array = app.data.get(keyMap);
+        //filter is not in place
+        app.data.set(keyMap, array.filter((a) => a.y > 0));
+    });
+    
+    
 }
 
 function addIfExist(map, key, value) {
@@ -102,7 +126,6 @@ function addIfExist(map, key, value) {
 }
 
 function initBarChart() {
-  console.log("asd+");
     app.chart = new CanvasJS.Chart("chartContainer", {
         animationEnabled: true,
 
@@ -126,5 +149,5 @@ function initBarChart() {
         }]
     });
     app.chart.render();
-    app.updateView();
+    app.updateViewFilter();
 }
