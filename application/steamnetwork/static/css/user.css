@@ -1,0 +1,12 @@
+label
+{
+    font-weight: normal;
+}
+.barChartSVG rect {
+  fill: grey;
+}
+
+.barChartSVG text {
+  fill: black;
+  font: 10px sans-serif;
+}

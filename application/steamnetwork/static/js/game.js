@@ -8,16 +8,17 @@ function showPie(gameName)
   {
     dataset = dataset.map(d => ({
       label: d.name,
-      count: d.playtime_2_weeks,
+      count: (d.playtime_2_weeks / 60.0).toFixed(1),
       enabled: true
     }));
   } else {
     dataset = dataset.map(d => ({
       label: d.name,
-      count: d.playtime_total,
+      count: (d.playtime_total / 60.0).toFixed(1),
       enabled: true
     }));
   }
+  app.titlePieChart = "Playtime repartition between friends playing "+ gameName;
   dataset = dataset.filter(d => d.count > 0);
 
   var width = app.pieChartDiameter;
@@ -155,6 +156,7 @@ function hidePie()
 {
   clearChart("pieChartContainer", "pieChartSVG");
   d3.select('#pieChartContainer').style('display', 'none');
+  app.titlePieChart = "Click on a bar to show some details";
 }
 
 function parseRawData(gameName)
