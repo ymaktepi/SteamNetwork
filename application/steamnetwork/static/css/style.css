@@ -41,11 +41,11 @@ body {
 
 
 
-.chartd3 rect {
+.barChartSVG rect {
   fill: steelblue;
 }
 
-.chartd3 text {
+.barChartSVG text {
   fill: red;
   font: 10px sans-serif;
   text-anchor: end;
