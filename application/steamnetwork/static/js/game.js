@@ -28,7 +28,8 @@ function showPie(gameName)
   var legendRectSize = 18;
   var legendSpacing = 4;
 
-  var color = d3.scaleOrdinal(d3.schemeCategory20b);
+  var color = d3.scaleOrdinal()
+  .range(["#000000","#787878","#141414","#8C8C8C","#282828","#A0A0A0","#3C3C3C","#B4B4B4","#505050","#C8C8C8","#646464"]);
 /*
   d3.select('#pieChartContainer')
     .attr('width', width)
