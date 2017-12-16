@@ -19,7 +19,7 @@ var app = new Vue({
         data: undefined,
 
         chartWidth: 1000,
-        chartHeight: 360,
+        pieChartDiameter: 360,
     },
     methods: {
         updateViewFilter: function(event) {
@@ -43,7 +43,7 @@ var app = new Vue({
             });
             app.totalMaxGames = len;
 
-            drawBarChart(app.data.get(mapName));
+            drawBarChart(app.data.get(mapName));let totalWidth = app.chartWidth;
             hidePie();
         }
     }

@@ -1,10 +1,11 @@
 #pieChartContainer {
-  height: 360px;
   margin: 0 auto;                                               /* NEW */
   position: relative;
+  height: 360px;
   width: 360px;
+  display: none;
 }
-.tooltip {
+.pieTooltip {
   background: #eee;
   box-shadow: 0 0 5px #999999;
   color: #333;
