@@ -23,6 +23,8 @@ var app = new Vue({
     },
     methods: {
         updateViewFilter: function(event) {
+            
+            
             let mapName = "";
             if (app.isPlayerSTR === 'true') {
                 mapName += "friends";
@@ -42,6 +44,11 @@ var app = new Vue({
                 'max': len
             });
             app.totalMaxGames = len;
+            
+            if(len < app.currentSelectedMaxGames)
+            {
+                app.currentSelectedMaxGames = len;
+            }
 
             drawBarChart(app.data.get(mapName));let totalWidth = app.chartWidth;
             hidePie();
