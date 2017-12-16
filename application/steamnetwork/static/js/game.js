@@ -1,6 +1,7 @@
 
 function showPie(gameName)
 {
+  hidePie();
   d3.select('#pieChartContainer').style('display', 'block');
   let dataset = parseRawData(gameName);
   if(app.isPlaytimeRangeTwoWeeksSTR === 'true')
