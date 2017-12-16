@@ -1,5 +1,4 @@
 {% extends "base/base.html" %} {% block title %} Loading {% endblock title %} {% block page_title %} Loading your profile {% endblock page_title %} {% block page_subtitle %} {% endblock page_subtitle %} {% block main %}
-{% block extraheaders %} <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/game.css')}}" />  {% endblock extraheaders %}
 
 <script>
     var name = "{{name}}";
@@ -38,15 +37,14 @@
             <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter">
         </div>
         <div id="barChartContainer">
-            <svg class="barChartSVG"></svg>
+            <svg class="chartd3">
+        </svg>
+
         </div>
-        <div id="pieChartContainer">
-            <svg class="pieChartSVG"></svg>
-        </div>
+
     </div>
 </div>
 {% endblock main %} {% block extrafooter %}
-<script src="https://d3js.org/d3.v4.min.js" charset="utf-8"></script>
-<script type="text/javascript" src="{{url_for('static', filename='js/game.js')}}"></script>
+<script src="https://d3js.org/d3.v3.min.js" charset="utf-8"></script>
 <script type="text/javascript" src="{{url_for('static', filename='js/user.js')}}"></script>
 {% endblock extrafooter %}

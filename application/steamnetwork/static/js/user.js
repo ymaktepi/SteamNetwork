@@ -1,5 +1,6 @@
 'use strict';
 
+
 var app = new Vue({
     el: "#user",
     delimiters: ["[[", "]]"],
@@ -8,39 +9,42 @@ var app = new Vue({
         personaname: undefined,
         state: "loading",
         gameidToGameMap: undefined,
+        gameNameToGameMap: undefined,
         dataPoints: undefined,
         chart: undefined,
         totalMaxGames: 0,
-        currentSelectedMaxGames: undefined,
-        isPlaytimeRangeTwoWeeks: "true",
-        isPlayer: "true",
+        currentSelectedMaxGames: 1,
+        isPlaytimeRangeTwoWeeksSTR: 'true',
+        isPlayerSTR: 'true',
         data: undefined,
+
+        chartWidth: 1000,
+        pieChartDiameter: 360,
     },
     methods: {
         updateViewFilter: function(event) {
             let mapName = "";
-            if (app.isPlayer === 'true') {
+            if (app.isPlayerSTR === 'true') {
                 mapName += "friends";
             } else {
                 mapName += "playtime";
             }
 
-            if (app.isPlaytimeRangeTwoWeeks === 'true') {
+            if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
                 mapName += "_2_weeks";
             } else {
                 mapName += "_total";
             }
-            console.log(mapName)
-            let len = app.data.get(mapName).length;
-            app.totalMaxGames = len;
-            let begin = len - app.currentSelectedMaxGames;
-            let end = len;
-            app.chart.options.data[0].dataPoints = app.data.get(mapName).slice(begin, end);
-            app.chart.render();
 
+            // set slider size
+            let len = app.data.get(mapName).length;
             $('#nbGames').prop({
                 'max': len
             });
+            app.totalMaxGames = len;
+
+            drawBarChart(app.data.get(mapName));let totalWidth = app.chartWidth;
+            hidePie();
         }
     }
 });
@@ -61,10 +65,12 @@ function getUserInfos() {
                 setPage_title("Profile of " + app.personaname);
                 setPage_subtitle("Let's find some friends, shall we?");
                 populateGameidToGameMap();
+                populateGameNameToGameMap();
                 populateData();
-                setTimeout(function() {
-                    initBarChart();
-                }, 500); // without the timeout it is not loaded correctly.
+                setTimeout(() => {
+                    app.currentSelectedMaxGames = app.nbGames < 10 ? app.nbGames : 10;
+                    app.updateViewFilter();
+                  }, 1);
             }
         }).catch((error) => console.log("Error getting the data: " + error));
 }
@@ -73,6 +79,13 @@ function populateGameidToGameMap() {
     app.gameidToGameMap = new Map();
     app.rawdata.games.forEach(game => {
         app.gameidToGameMap.set(game.app_id, game);
+    });
+}
+
+function populateGameNameToGameMap() {
+    app.gameNameToGameMap = new Map();
+    app.rawdata.games.forEach(game => {
+        app.gameNameToGameMap.set(game.name, game);
     });
 }
 
@@ -87,12 +100,13 @@ function populateData() {
         friend.games.forEach(game => {
             if (app.gameidToGameMap.has(game.app_id)) {
                 let gameName = app.gameidToGameMap.get(game.app_id).name;
-                addIfExist(map.get("playtime_2_weeks"), gameName, game.playtime_2_weeks);
-                addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
                 if (game.playtime_2_weeks > 0) {
+                    addIfExist(map.get("playtime_2_weeks"), gameName, game.playtime_2_weeks);
+                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
                     addIfExist(map.get("friends_2_weeks"), gameName, 1);
                     addIfExist(map.get("friends_total"), gameName, 1);
                 } else if (game.playtime_total > 0) {
+                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
                     addIfExist(map.get("friends_total"), gameName, 1);
                 }
             }
@@ -101,20 +115,22 @@ function populateData() {
 
     listKeys.forEach(keyMap => {
         map.get(keyMap).forEach((value, key, map) => app.data.get(keyMap).push({
-            "y": value,
-            "label": key
+            "value": value,
+            "name": key
         }));
     });
-    listKeys.forEach(keyMap => {
-        app.data.get(keyMap).sort((a, b) => a.y - b.y);
-    });
+
     listKeys.forEach(keyMap => {
         let array = app.data.get(keyMap);
         //filter is not in place
-        app.data.set(keyMap, array.filter((a) => a.y > 0));
+        app.data.set(keyMap, array.filter((a) => a.value > 0));
     });
-    
-    
+
+    listKeys.forEach(keyMap => {
+        app.data.get(keyMap).sort((a, b) => b.value - a.value);
+    });
+
+
 }
 
 function addIfExist(map, key, value) {
@@ -125,29 +141,75 @@ function addIfExist(map, key, value) {
     }
 }
 
-function initBarChart() {
-    app.chart = new CanvasJS.Chart("chartContainer", {
-        animationEnabled: true,
 
-        title: {
-            text: "Most played games by your friends during the last 2 weeks"
-        },
-        axisX: {
-            interval: 1
-        },
-        axisY2: {
-            interlacedColor: "rgba(1,77,101,.2)",
-            gridColor: "rgba(1,77,101,.1)",
-            title: "Number of players"
-        },
-        data: [{
-            type: "bar",
-            name: "games",
-            axisYType: "secondary",
-            color: "#014D65",
-            dataPoints: [],
-        }]
-    });
-    app.chart.render();
-    app.updateViewFilter();
+function clearChart(containerName, chartName) {
+    d3.select('.'+chartName).remove();
+    d3.select('#'+containerName)
+        .append('svg')
+        .attr("class", chartName);
+}
+function clearChart2() {
+    d3.select('.barChartSVG').remove();
+    d3.select('#barChartContainer')
+        .append('svg')
+        .attr("class", "barChartSVG");
+}
+
+function drawBarChart(allDatas) {
+
+    //clearChart("barChartContainer", "barChartSVG");
+    clearChart2();
+
+    let datas = allDatas.slice(0, app.currentSelectedMaxGames);
+
+
+    let margin = {
+        top: 10,
+        right: 30,
+        bottom: 0,
+        left: 200
+    };
+
+    let totalWidth = app.chartWidth;
+    let barHeight = 12;
+    let totalHeight = barHeight * datas.length + margin.top + margin.bottom ;
+
+    let width = totalWidth - margin.left - margin.right;
+    let height = totalHeight - margin.top - margin.bottom;
+
+    let x = d3.scaleLinear()
+        .domain([0, d3.max(datas, data => data.value)])
+        .range([0, width]);
+
+    let chart = d3.select(".barChartSVG")
+        .attr("width", totalWidth)
+        .attr("height", totalHeight);
+
+    var g = chart.append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    let bar = g.selectAll("g")
+        .data(datas)
+        .enter().append("g")
+        .attr("transform", (data, index) => "translate(0," + index * barHeight + ")");
+
+
+    bar.append("rect")
+        .attr("width", data => x(data.value))
+        .attr("height", barHeight - 1)
+        .on("click", data => showPie(data.name));
+    // text for number of players/hours played
+    bar.append("text")
+        .attr("text-anchor", "start")
+        .attr("x", data => (x(data.value) + 8))
+        .attr("y", barHeight / 2)
+        .attr("dy", ".35em")
+        .text(data => data.value);
+
+    // text name of game
+    bar.append("text")
+        .attr("x", -2)
+        .attr("y", barHeight / 2)
+        .attr("dy", ".35em")
+        .text(data => data.name);
 }

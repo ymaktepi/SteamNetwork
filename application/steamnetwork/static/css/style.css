@@ -38,3 +38,15 @@ body {
 .container {
   flex: 1;
 }
+
+
+
+.barChartSVG rect {
+  fill: steelblue;
+}
+
+.barChartSVG text {
+  fill: red;
+  font: 10px sans-serif;
+  text-anchor: end;
+}
