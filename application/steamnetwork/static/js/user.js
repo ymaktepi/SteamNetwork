@@ -141,18 +141,18 @@ function drawBarChart(allDatas) {
     clearChart();
 
     let datas = allDatas.slice(0, app.currentSelectedMaxGames);
-
-
-    let totalWidth = app.chartWidth;
-    let totalHeight = app.chartHeight;
-    let barHeight = totalHeight / datas.length;
+    
 
     let margin = {
-        top: 0,
+        top: 10,
         right: 30,
         bottom: 0,
         left: 200
     };
+
+    let totalWidth = app.chartWidth;
+    let barHeight = 12;
+    let totalHeight = barHeight * datas.length + margin.top + margin.bottom ;
 
     let width = totalWidth - margin.left - margin.right;
     let height = totalHeight - margin.top - margin.bottom;
