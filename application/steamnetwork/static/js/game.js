@@ -1,6 +1,7 @@
 function showPie(gameName) {
     hidePie();
-    d3.select('#pieChartContainer').style('display', 'block');
+    d3.select('#pieChartContainer').style('display', 'inline').style('height', "100%");
+    d3.select('#pieCharLegendContainer').style('display', 'inline').style('height', "100%");
     let dataset = parseRawData(gameName);
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
         dataset = dataset.map(d => ({
@@ -27,10 +28,13 @@ function showPie(gameName) {
     
     var width = app.pieChartDiameter;
     var height = app.pieChartDiameter;
-    var radius = Math.min(width, height) / 2;
-    var donutWidth = 75;
     var legendRectSize = 18;
     var legendSpacing = 4;
+    var legendWidth = 150;
+    var legendHeight = dataset.length * (legendRectSize + legendSpacing);
+    var radius = Math.min(width, height) / 2;
+    var donutWidth = 75;
+
 
     var color = d3.scaleOrdinal()
         .range(patternIds.map(id => "url('"+id+"')"));
@@ -45,6 +49,13 @@ function showPie(gameName) {
         .append('g')
         .attr('transform', 'translate(' + (width / 2) +
             ',' + (height / 2) + ')');
+    var pieChartLegendSVG = d3.select('.pieChartLegendSVG')
+
+        .attr('width', legendWidth)
+          .attr('height', legendHeight)
+        .append('g');
+        //.attr('transform', 'translate(' + (legendWidth / 2) +
+            //',' + (legendHeight / 2) + ')');
 
     addTextureDefs(d3.select('.pieChartSVG'));
 
@@ -108,7 +119,7 @@ function showPie(gameName) {
     });
 
 
-    var legend = svg.selectAll('.legend')
+    var legend = pieChartLegendSVG.selectAll('.legend')
         .data(color.domain())
         .enter()
         .append('g')
@@ -118,7 +129,7 @@ function showPie(gameName) {
             var offset = height * color.domain().length / 2;
             var horz = -2 * legendRectSize;
             var vert = i * height - offset;
-            return 'translate(' + horz + ',' + vert + ')';
+            return 'translate(' + 0 + ',' + i * height + ')';
         });
 
     legend.append('rect')
@@ -168,8 +179,11 @@ function showPie(gameName) {
 }
 
 function hidePie() {
+
     clearChart("pieChartContainer", "pieChartSVG");
+    clearChart("pieCharLegendContainer", "pieChartLegendSVG");
     d3.select('#pieChartContainer').style('display', 'none');
+    d3.select('#pieCharLegendContainer').style('display', 'none');
     d3.select(".pieTooltip").remove();
     app.titlePieChart = "Click on a bar to show some details";
 }

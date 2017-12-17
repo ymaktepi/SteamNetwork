@@ -1,9 +1,9 @@
 #pieChartContainer {
-  margin: 0 auto;
+  /*margin: 0 auto;
   position: relative;
   height: 360px;
   width: 360px;
-  display: none;
+  display: none;*/
 }
 .pieTooltip {
   background: #eee;
