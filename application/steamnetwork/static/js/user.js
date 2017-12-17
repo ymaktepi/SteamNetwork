@@ -20,23 +20,32 @@ var app = new Vue({
 
         chartWidth: 1000,
         pieChartDiameter: 360,
+
+        titleBarChart: "",
+        titlePieChart: "Click on a bar to show some details",
     },
     methods: {
         updateViewFilter: function(event) {
-            
-            
+
             let mapName = "";
+            let title = "";
             if (app.isPlayerSTR === 'true') {
                 mapName += "friends";
+                title += "Number of friends who played each game ";
             } else {
                 mapName += "playtime";
+                title += "Your friendlist's total playtime for each game ";
             }
 
             if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
                 mapName += "_2_weeks";
+                title += "in the last two weeks";
             } else {
                 mapName += "_total";
+                title += "since 2009";
             }
+
+            app.titleBarChart = title;
 
             // set slider size
             let len = app.data.get(mapName).length;
@@ -44,19 +53,44 @@ var app = new Vue({
                 'max': len
             });
             app.totalMaxGames = len;
-            
-            if(len < app.currentSelectedMaxGames)
-            {
+
+            if (len < app.currentSelectedMaxGames) {
                 app.currentSelectedMaxGames = len;
             }
 
-            drawBarChart(app.data.get(mapName));let totalWidth = app.chartWidth;
+            drawBarChart(app.data.get(mapName));
+            let totalWidth = app.chartWidth;
             hidePie();
         }
     }
 });
 
 window.onload = getUserInfos;
+
+window.onresize = function() {
+    resetChartSize();
+    app.updateViewFilter();
+};
+
+//pseudo-responsiveness for mobile phones
+//based on the bootstrap grid system's sizes
+// xs < 576, sm >= 576, md >= 768, lg >= 992, xl >= 1200
+function resetChartSize() {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    if (w > 1200) {
+        app.chartWidth = 1000;
+    } else if (w > 992) {
+        app.chartWidth = 800;
+    } else if (w > 768) {
+        app.chartWidth = 650;
+    } else if (w > 576) {
+        app.chartWidth = 550;
+    } else {
+        app.chartWidth = 360;
+    }
+}
 
 function getUserInfos() {
     fetch('/api/allinfos/' + name, {
@@ -74,10 +108,11 @@ function getUserInfos() {
                 populateGameidToGameMap();
                 populateGameNameToGameMap();
                 populateData();
+                resetChartSize();
                 setTimeout(() => {
                     app.currentSelectedMaxGames = app.nbGames < 10 ? app.nbGames : 10;
                     app.updateViewFilter();
-                  }, 1);
+                }, 1);
             }
         }).catch((error) => console.log("Error getting the data: " + error));
 }
@@ -108,12 +143,12 @@ function populateData() {
             if (app.gameidToGameMap.has(game.app_id)) {
                 let gameName = app.gameidToGameMap.get(game.app_id).name;
                 if (game.playtime_2_weeks > 0) {
-                    addIfExist(map.get("playtime_2_weeks"), gameName, game.playtime_2_weeks);
-                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
+                    addIfExist(map.get("playtime_2_weeks"), gameName, game.playtime_2_weeks / 60.0);
+                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total / 60.0);
                     addIfExist(map.get("friends_2_weeks"), gameName, 1);
                     addIfExist(map.get("friends_total"), gameName, 1);
                 } else if (game.playtime_total > 0) {
-                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total);
+                    addIfExist(map.get("playtime_total"), gameName, game.playtime_total / 60.0);
                     addIfExist(map.get("friends_total"), gameName, 1);
                 }
             }
@@ -150,11 +185,12 @@ function addIfExist(map, key, value) {
 
 
 function clearChart(containerName, chartName) {
-    d3.select('.'+chartName).remove();
-    d3.select('#'+containerName)
+    d3.select('.' + chartName).remove();
+    d3.select('#' + containerName)
         .append('svg')
         .attr("class", chartName);
 }
+
 function clearChart2() {
     d3.select('.barChartSVG').remove();
     d3.select('#barChartContainer')
@@ -179,7 +215,7 @@ function drawBarChart(allDatas) {
 
     let totalWidth = app.chartWidth;
     let barHeight = 12;
-    let totalHeight = barHeight * datas.length + margin.top + margin.bottom ;
+    let totalHeight = barHeight * datas.length + margin.top + margin.bottom;
 
     let width = totalWidth - margin.left - margin.right;
     let height = totalHeight - margin.top - margin.bottom;
@@ -198,23 +234,30 @@ function drawBarChart(allDatas) {
     let bar = g.selectAll("g")
         .data(datas)
         .enter().append("g")
-        .attr("transform", (data, index) => "translate(0," + index * barHeight + ")");
+        .attr("transform", (data, index) => "translate(0," + (index * barHeight) + ")");
 
 
     bar.append("rect")
         .attr("width", data => x(data.value))
-        .attr("height", barHeight - 1)
+        .attr("height", barHeight - 2)
+        .attr("y", 1.5)
+        .attr("rx", 2)
+        .attr("ry", 2)
         .on("click", data => showPie(data.name));
+
     // text for number of players/hours played
     bar.append("text")
         .attr("text-anchor", "start")
-        .attr("x", data => (x(data.value) + 8))
+        .attr("x", data => (x(data.value) + 2))
         .attr("y", barHeight / 2)
         .attr("dy", ".35em")
-        .text(data => data.value);
+        //format: integer is not rounded, floats are rounded to 1 decimal point
+        // usefull only if we have a small amount of played hours
+        .text(data => Number.isInteger(data.value) ? data.value : data.value.toFixed(1));
 
     // text name of game
     bar.append("text")
+        .attr("text-anchor", "end")
         .attr("x", -2)
         .attr("y", barHeight / 2)
         .attr("dy", ".35em")

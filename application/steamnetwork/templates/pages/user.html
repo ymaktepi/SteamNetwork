@@ -1,5 +1,7 @@
-{% extends "base/base.html" %} {% block title %} Loading {% endblock title %} {% block page_title %} Loading your profile {% endblock page_title %} {% block page_subtitle %} {% endblock page_subtitle %} {% block main %}
-{% block extraheaders %} <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/game.css')}}" />  {% endblock extraheaders %}
+{% extends "base/base.html" %} {% block title %} Loading {% endblock title %} {% block page_title %} Loading your profile {% endblock page_title %} {% block page_subtitle %} {% endblock page_subtitle %} {% block main %} {% block extraheaders %}
+
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/user.css')}}" />
+<link rel="stylesheet" type="text/css" href="{{url_for('static', filename='css/game.css')}}" /> {% endblock extraheaders %}
 
 <script>
     var name = "{{name}}";
@@ -19,27 +21,40 @@
         </div>
     </div>
     <div v-if='state === "loaded"' v-cloak>
-        <div id="filters">
-            <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeksSTR" v-on:change="updateViewFilter">
-            <label for="twoWeeks">2 last weeks</label>
-            <br>
-            <input type="radio" id="global" value="false" v-model="isPlaytimeRangeTwoWeeksSTR" v-on:change="updateViewFilter">
-            <label for="global">global time</label>
-            <br>
-            <br>
-            <br>
-            <input type="radio" id="players" value="true" v-model="isPlayerSTR" v-on:change="updateViewFilter">
-            <label for="players">Number of players</label>
-            <br>
-            <input type="radio" id="hours" value="false" v-model="isPlayerSTR" v-on:change="updateViewFilter">
-            <label for="hours">Hours played</label>
-            <br>
-            <label for="nbGames">Number of games:  [[currentSelectedMaxGames]]/[[totalMaxGames]]</label>
-            <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter">
+        <div id="filters" class="text-center">
+            <div>
+                <label for="twoWeeks" class="radio-inline">
+                    <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeksSTR" v-on:change="updateViewFilter">
+                    Last 2 weeks
+                </label>
+                <label for="global" class="radio-inline">
+                    <input type="radio" id="global" value="false" v-model="isPlaytimeRangeTwoWeeksSTR" v-on:change="updateViewFilter">
+                    Forever
+                </label>
+            </div>
+            <div>
+                <label for="players" class="radio-inline">
+                    <input type="radio" id="players" value="true" v-model="isPlayerSTR" v-on:change="updateViewFilter">
+                    Number of players
+                </label>
+
+                <label for="hours" class="radio-inline">
+                    <input type="radio" id="hours" value="false" v-model="isPlayerSTR" v-on:change="updateViewFilter">
+                    Hours played
+                </label>
+            </div>
+            <div>
+                <label for="nbGames">
+                    Number of games:  [[currentSelectedMaxGames]]/[[totalMaxGames]]
+                    <input v-model="currentSelectedMaxGames" type="range" min="1" max="100" id="nbGames" step="1" v-on:change="updateViewFilter">
+                </label>
+            </div>
         </div>
-        <div id="barChartContainer">
+        <div id="barChartContainer" class="text-center">
+            <h2 class="text-center">[[titleBarChart]]</h2>
             <svg class="barChartSVG"></svg>
         </div>
+            <h3 class="text-center">[[titlePieChart]]</h3>
         <div id="pieChartContainer">
             <svg class="pieChartSVG"></svg>
         </div>

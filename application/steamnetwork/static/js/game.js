@@ -8,16 +8,17 @@ function showPie(gameName)
   {
     dataset = dataset.map(d => ({
       label: d.name,
-      count: d.playtime_2_weeks,
+      count: (d.playtime_2_weeks / 60.0).toFixed(1),
       enabled: true
     }));
   } else {
     dataset = dataset.map(d => ({
       label: d.name,
-      count: d.playtime_total,
+      count: (d.playtime_total / 60.0).toFixed(1),
       enabled: true
     }));
   }
+  app.titlePieChart = "Playtime repartition between friends playing "+ gameName;
   dataset = dataset.filter(d => d.count > 0);
 
   var width = app.pieChartDiameter;
@@ -27,7 +28,8 @@ function showPie(gameName)
   var legendRectSize = 18;
   var legendSpacing = 4;
 
-  var color = d3.scaleOrdinal(d3.schemeCategory20b);
+  var color = d3.scaleOrdinal()
+  .range(["#000000","#787878","#141414","#8C8C8C","#282828","#A0A0A0","#3C3C3C","#B4B4B4","#505050","#C8C8C8","#646464"]);
 /*
   d3.select('#pieChartContainer')
     .attr('width', width)
@@ -155,6 +157,7 @@ function hidePie()
 {
   clearChart("pieChartContainer", "pieChartSVG");
   d3.select('#pieChartContainer').style('display', 'none');
+  app.titlePieChart = "Click on a bar to show some details";
 }
 
 function parseRawData(gameName)
