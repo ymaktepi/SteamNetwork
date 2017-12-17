@@ -7,25 +7,32 @@ function showPie(gameName) {
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_2_weeks,
+            steamId: d.steam_id,
+            avatar: d.avatar,
         }));
     } else {
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_total,
+            steamId: d.steam_id,
+            avatar: d.avatar,
         }));
     }
     dataset = dataset.filter(d => d.count > 0);
     dataset = dataset.sort((a,b)=> b.count - a.count);
-    
+
     // transform into hours
     dataset = dataset.map(d =>({
         label: d.label,
         count: (d.count / 60.0).toFixed(2),
-        enabled: true
+        enabled: true,
+        steamId: d.steamId,
+        avatar: d.avatar,
     }));
-    
+    console.log(dataset);
+
     app.titlePieChart = "Playtime repartition between friends playing " + gameName;
-    
+
     var width = app.pieChartDiameter;
     var height = app.pieChartDiameter;
     var legendRectSize = 18;
@@ -76,13 +83,17 @@ function showPie(gameName) {
         .attr('class', 'pieTooltip');
 
     tooltip.append('div')
+        .attr('class', 'pieAvatar')
+        .append('img');
+
+    tooltip.append('div')
         .attr('class', 'pieLabel');
 
     tooltip.append('div')
         .attr('class', 'pieCount');
 
-    tooltip.append('div')
-        .attr('class', 'PiePercent');
+    //tooltip.append('div')
+        //.attr('class', 'PiePercent');
     var path = svg.selectAll('path')
         .data(pie(dataset))
         .enter()
@@ -102,11 +113,20 @@ function showPie(gameName) {
             return (d.enabled) ? d.count : 0;
         }));
         var percent = Math.round(1000 * d.data.count / total) / 10;
+        tooltip.select('.pieAvatar').select('img').attr('src', d.data.avatar).attr('alt', 'Avatar image').attr('class', 'img-responsive');
         tooltip.select('.pieLabel').html(d.data.label);
-        tooltip.select('.pieCount').html(d.data.count);
-        tooltip.select('.PiePercent').html(percent + '%');
-        tooltip.style('display', 'block');
+        if(d.data.count > 1)
+          tooltip.select('.pieCount').html(d.data.count + ' hour');
+        else
+          tooltip.select('.pieCount').html(d.data.count + ' hours');
+        //tooltip.select('.PiePercent').html(percent + '%');
+        tooltip.style('display', 'block').style('width', 150);
     });
+
+    path.on('click', function(d) {
+      window.location.href="/user/"+d.data.steamId;
+    });
+
 
     path.on('mouseout', function() {
         tooltip.style('display', 'none');
@@ -199,7 +219,9 @@ function parseRawData(gameName) {
             dataset.push({
                 "name": friend.persona_name,
                 "playtime_2_weeks": friend.games[i].playtime_2_weeks,
-                "playtime_total": friend.games[i].playtime_total
+                "playtime_total": friend.games[i].playtime_total,
+                "steam_id": friend.steam_id,
+                "avatar": friend.avatar
             });
         }
     });
