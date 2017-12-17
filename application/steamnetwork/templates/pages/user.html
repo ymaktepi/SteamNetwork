@@ -20,8 +20,8 @@
             <div class="sk-cube3 sk-cube"></div>
         </div>
     </div>
-    <div v-if='state === "loaded"' v-cloak>
-        <div id="filters" class="text-center">
+    <div v-if='state === "loaded"' class="row" v-cloak>
+        <div id="filters" class="text-center col-12">
             <div>
                 <label for="twoWeeks" class="radio-inline">
                     <input type="radio" id="twoWeeks" value="true" v-model="isPlaytimeRangeTwoWeeksSTR" v-on:change="updateViewFilter">
@@ -50,13 +50,16 @@
                 </label>
             </div>
         </div>
-        <div id="barChartContainer" class="text-center">
+        <div id="barChartContainer" class="text-center col-12">
             <h2 class="text-center">[[titleBarChart]]</h2>
             <svg class="barChartSVG"></svg>
         </div>
             <h3 class="text-center">[[titlePieChart]]</h3>
-        <div id="pieChartContainer">
+        <div id="pieChartContainer" class="text-center col-6">
             <svg class="pieChartSVG"></svg>
+        </div>
+            <div id="pieCharLegendContainer" class="text-center col-6">
+            <svg class="pieChartLegendSVG"></svg>
         </div>
     </div>
 </div>
