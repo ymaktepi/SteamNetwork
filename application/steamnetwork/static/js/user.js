@@ -27,7 +27,6 @@ var app = new Vue({
     methods: {
         updateViewFilter: function(event) {
 
-
             let mapName = "";
             let title = "";
             if (app.isPlayerSTR === 'true') {
@@ -55,18 +54,43 @@ var app = new Vue({
             });
             app.totalMaxGames = len;
 
-            if(len < app.currentSelectedMaxGames)
-            {
+            if (len < app.currentSelectedMaxGames) {
                 app.currentSelectedMaxGames = len;
             }
 
-            drawBarChart(app.data.get(mapName));let totalWidth = app.chartWidth;
+            drawBarChart(app.data.get(mapName));
+            let totalWidth = app.chartWidth;
             hidePie();
         }
     }
 });
 
 window.onload = getUserInfos;
+
+window.onresize = function() {
+    resetChartSize();
+    app.updateViewFilter();
+};
+
+//pseudo-responsiveness for mobile phones
+//based on the bootstrap grid system's sizes
+// xs < 576, sm >= 576, md >= 768, lg >= 992, xl >= 1200
+function resetChartSize() {
+    var w = Math.max(document.documentElement.clientWidth, window.innerWidth || 0);
+    var h = Math.max(document.documentElement.clientHeight, window.innerHeight || 0);
+
+    if (w > 1200) {
+        app.chartWidth = 1000;
+    } else if (w > 992) {
+        app.chartWidth = 800;
+    } else if (w > 768) {
+        app.chartWidth = 650;
+    } else if (w > 576) {
+        app.chartWidth = 550;
+    } else {
+        app.chartWidth = 360;
+    }
+}
 
 function getUserInfos() {
     fetch('/api/allinfos/' + name, {
@@ -84,10 +108,11 @@ function getUserInfos() {
                 populateGameidToGameMap();
                 populateGameNameToGameMap();
                 populateData();
+                resetChartSize();
                 setTimeout(() => {
                     app.currentSelectedMaxGames = app.nbGames < 10 ? app.nbGames : 10;
                     app.updateViewFilter();
-                  }, 1);
+                }, 1);
             }
         }).catch((error) => console.log("Error getting the data: " + error));
 }
@@ -160,11 +185,12 @@ function addIfExist(map, key, value) {
 
 
 function clearChart(containerName, chartName) {
-    d3.select('.'+chartName).remove();
-    d3.select('#'+containerName)
+    d3.select('.' + chartName).remove();
+    d3.select('#' + containerName)
         .append('svg')
         .attr("class", chartName);
 }
+
 function clearChart2() {
     d3.select('.barChartSVG').remove();
     d3.select('#barChartContainer')
@@ -189,7 +215,7 @@ function drawBarChart(allDatas) {
 
     let totalWidth = app.chartWidth;
     let barHeight = 12;
-    let totalHeight = barHeight * datas.length + margin.top + margin.bottom ;
+    let totalHeight = barHeight * datas.length + margin.top + margin.bottom;
 
     let width = totalWidth - margin.left - margin.right;
     let height = totalHeight - margin.top - margin.bottom;
@@ -227,7 +253,7 @@ function drawBarChart(allDatas) {
         .attr("dy", ".35em")
         //format: integer is not rounded, floats are rounded to 1 decimal point
         // usefull only if we have a small amount of played hours
-        .text(data => Number.isInteger(data.value)?data.value:data.value.toFixed(1));
+        .text(data => Number.isInteger(data.value) ? data.value : data.value.toFixed(1));
 
     // text name of game
     bar.append("text")
