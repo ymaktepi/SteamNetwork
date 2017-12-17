@@ -7,7 +7,7 @@
 <div id="app1" class="row " > 
     <div v-if='state === "userPicking"' class="container" >
         <div class="row alert alert-danger" v-if="error" v-cloak>
-            User with ID: "[[ user_id ]]" could not be found.
+            User with ID: "[[ user_id ]]" could not be found. Is the profile public?
         </div>
         <div class="row">
         <input  v-model="user_id" v-on:keydown="clearError" v-on:keyup.enter="buttonIdClicked"

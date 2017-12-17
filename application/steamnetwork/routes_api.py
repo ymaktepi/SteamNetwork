@@ -5,6 +5,11 @@ from flask import Flask, jsonify
 
 from steamnetwork import app
 from .api_wrapper import ApiWrapper
+import sys
+
+def print_flask(*args, **kwargs):
+    print(*args, **kwargs)
+    sys.stdout.flush()
 
 
 def get_response_ok():
@@ -15,7 +20,7 @@ def json_response_error(error_message='error'):
 
 def json_user_to_dict(json_user, json_games):
     response_user = {}
-    response_user['steam_id'] = int(json_user['steamid'])
+    response_user['steam_id'] = str(json_user['steamid'])
     response_user['persona_name'] = json_user['personaname']
     response_user['profile_url'] = json_user['profileurl']
     response_user['avatar'] = json_user['avatarfull']
@@ -63,6 +68,9 @@ def route_api_all_infos(name):
 def route_validate_user(name):
     try:
         steam_id = ApiWrapper.get_user_id(name)
+        friend_list = ApiWrapper.get_friend_list(steam_id)
+        if len(friend_list) is 0:
+            return json_response_error("This profile is either private or has no friends, sorry :(")
         response = get_response_ok()
         response["steam_id"] = steam_id
         return jsonify(response)
