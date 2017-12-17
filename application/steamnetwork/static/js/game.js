@@ -5,19 +5,26 @@ function showPie(gameName) {
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
         dataset = dataset.map(d => ({
             label: d.name,
-            count: (d.playtime_2_weeks / 60.0).toFixed(1),
-            enabled: true
+            count: d.playtime_2_weeks,
         }));
     } else {
         dataset = dataset.map(d => ({
             label: d.name,
-            count: (d.playtime_total / 60.0).toFixed(1),
-            enabled: true
+            count: d.playtime_total,
         }));
     }
-    app.titlePieChart = "Playtime repartition between friends playing " + gameName;
     dataset = dataset.filter(d => d.count > 0);
-
+    dataset = dataset.sort((a,b)=> b.count - a.count);
+    
+    // transform into hours
+    dataset = dataset.map(d =>({
+        label: d.label,
+        count: (d.count / 60.0).toFixed(2),
+        enabled: true
+    }));
+    
+    app.titlePieChart = "Playtime repartition between friends playing " + gameName;
+    
     var width = app.pieChartDiameter;
     var height = app.pieChartDiameter;
     var radius = Math.min(width, height) / 2;

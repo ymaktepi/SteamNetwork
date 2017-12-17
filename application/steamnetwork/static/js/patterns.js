@@ -213,7 +213,6 @@ var patterns = [
 ]
 
 var patternIds = patterns.map(p => "#" + p.attr[0][1]);
-console.log(patternIds);
 
 function addTextureDefs(svg) {
     let defs = svg.append("defs");
