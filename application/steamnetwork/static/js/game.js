@@ -1,9 +1,7 @@
 function showPie(gameName) {
     hidePie();
-    //d3.select('#pieChartContainer').style('display', 'inline-block').style('align-items', 'center').style('height', '100%');
-    //d3.select('#pieCharLegendContainer').style('display', 'inline-block').style('align-items', 'center').style('height', '100%');
-    d3.select('#pieChartContainer').style('display', 'inline-block').style('position', 'relative');
-    d3.select('#pieCharLegendContainer').style('display', 'inline-block').style('top', '50%').style('transform', 'translateY(-50%)'); /* tiré de la moitié de sa propre hauteur */
+    d3.select('#pieChartContainer').style('display', 'inline').style('height', "100%");
+    d3.select('#pieCharLegendContainer').style('display', 'inline').style('height', "100%");
     let dataset = parseRawData(gameName);
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
         dataset = dataset.map(d => ({
@@ -25,7 +23,7 @@ function showPie(gameName) {
     var height = app.pieChartDiameter;
     var legendRectSize = 18;
     var legendSpacing = 4;
-    var legendWidth = 300;
+    var legendWidth = 150;
     var legendHeight = dataset.length * (legendRectSize + legendSpacing);
     var radius = Math.min(width, height) / 2;
     var donutWidth = 75;
