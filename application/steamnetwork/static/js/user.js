@@ -205,7 +205,6 @@ function drawBarChart(allDatas) {
 
     let datas = allDatas.slice(0, app.currentSelectedMaxGames);
 
-
     let margin = {
         top: 10,
         right: 30,
@@ -214,7 +213,7 @@ function drawBarChart(allDatas) {
     };
 
     let totalWidth = app.chartWidth;
-    let barHeight = 12;
+    let barHeight = 14;
     let totalHeight = barHeight * datas.length + margin.top + margin.bottom;
 
     let width = totalWidth - margin.left - margin.right;
@@ -228,9 +227,11 @@ function drawBarChart(allDatas) {
         .attr("width", totalWidth)
         .attr("height", totalHeight);
 
+    //translating of the global origin taking into account the margins
     var g = chart.append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    // bar for each data
     let bar = g.selectAll("g")
         .data(datas)
         .enter().append("g")
@@ -240,7 +241,7 @@ function drawBarChart(allDatas) {
     bar.append("rect")
         .attr("width", data => x(data.value))
         .attr("height", barHeight - 2)
-        .attr("y", 1.5)
+        .attr("y", 1)
         .attr("rx", 2)
         .attr("ry", 2)
         .on("click", data => showPie(data.name));
@@ -251,7 +252,7 @@ function drawBarChart(allDatas) {
         .attr("x", data => (x(data.value) + 2))
         .attr("y", barHeight / 2)
         .attr("dy", ".35em")
-        //format: integer is not rounded, floats are rounded to 1 decimal point
+        //format: integers are not rounded, floats are rounded to 1 decimal place
         // usefull only if we have a small amount of played hours
         .text(data => Number.isInteger(data.value) ? data.value : data.value.toFixed(1));
 
