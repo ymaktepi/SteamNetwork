@@ -63,6 +63,9 @@ def route_api_all_infos(name):
 def route_validate_user(name):
     try:
         steam_id = ApiWrapper.get_user_id(name)
+        friend_list = ApiWrapper.get_friend_list(steam_id)
+        if len(friend_list) is 0:
+            return json_response_error("This profile is either private or has no friends, sorry :(")
         response = get_response_ok()
         response["steam_id"] = steam_id
         return jsonify(response)
