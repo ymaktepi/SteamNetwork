@@ -21,17 +21,13 @@ def cached_dict_timeout(timeout):
         dic = {}
         def wrapper(*args):
             name = function.__name__+'_'.join(args)
-            flask_print("callingcached"+name)
             response = None
             if name in dic:
                 response_tuple = dic[name]
                 if now_millis() - response_tuple[0] < timeout:
-                    flask_print("getting cached")
                     return response_tuple[1]
-            flask_print("out of date")
             response = function(*args)
             dic[name] = (now_millis(), response)
-            flask_print(response)
             return response
         return wrapper
     return cached_dict
@@ -40,17 +36,13 @@ def cached_redis_timeout(timeout):
     def cached_redis(function):
         def wrapper(*args):
             name = "test"+function.__name__+'_'.join(args)
-            flask_print("callingcached: "+name)
             response = redis_store.get(name)
             if response is not None:
                 response_tuple = pickle.loads(response)
                 if now_millis() - response_tuple[0] < timeout:
-                    flask_print("getting cached")
                     return response_tuple[1]
-            flask_print("out of date")
             response = function(*args)
             redis_store.set(name, pickle.dumps((now_millis(), response)))
-            flask_print(response)
             return response
         return wrapper
     return cached_redis_timeout
@@ -118,8 +110,6 @@ class ApiWrapper(object):
         try:
             user_ids = [int(user_id) for user_id in user_ids]
         except:
-            flask_print("user_ids")
-            flask_print(user_ids)
             raise ApiWrapperException("The user_ids must be integers")
         list_profiles=[]
         n = 100 #the steam api accepts maximum 100 users in this query
