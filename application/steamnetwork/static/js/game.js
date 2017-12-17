@@ -116,9 +116,9 @@ function showPie(gameName) {
         tooltip.select('.pieAvatar').select('img').attr('src', d.data.avatar).attr('alt', 'Avatar image').attr('class', 'img-responsive');
         tooltip.select('.pieLabel').html(d.data.label);
         if(d.data.count > 1)
-          tooltip.select('.pieCount').html(d.data.count + ' hour');
-        else
           tooltip.select('.pieCount').html(d.data.count + ' hours');
+        else
+          tooltip.select('.pieCount').html(d.data.count + ' hour');
         //tooltip.select('.PiePercent').html(percent + '%');
         tooltip.style('display', 'block').style('width', 150);
     });
