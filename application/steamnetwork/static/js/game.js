@@ -4,6 +4,7 @@ function showPie(gameName) {
     d3.select('#pieCharLegendContainer').style('display', 'inline').style('height', "100%");
     let dataset = parseRawData(gameName);
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
+        app.titlePieChart = "TOP 10 of friends playing " + gameName + " since they bought the game";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_2_weeks,
@@ -11,6 +12,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     } else {
+      app.titlePieChart = "TOP 10 of friends playing " + gameName + " during the last two weeks";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_total,
@@ -18,6 +20,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     }
+    app.subTitlePieChart = "Click on the square next to the name to hide the player's record from the graph.";
     dataset = dataset.filter(d => d.count > 0);
     dataset = dataset.sort((a,b)=> b.count - a.count);
 
@@ -29,9 +32,7 @@ function showPie(gameName) {
         steamId: d.steamId,
         avatar: d.avatar,
     }));
-    console.log(dataset);
-
-    app.titlePieChart = "Playtime repartition between friends playing " + gameName;
+    dataset = dataset.slice(0,9); //top 10
 
     var width = app.pieChartDiameter;
     var height = app.pieChartDiameter;
@@ -42,14 +43,9 @@ function showPie(gameName) {
     var radius = Math.min(width, height) / 2;
     var donutWidth = 75;
 
-
     var color = d3.scaleOrdinal()
         .range(patternIds.map(id => "url('"+id+"')"));
-    /*
-      d3.select('#pieChartContainer')
-        .attr('width', width)
-        .attr('height', height);
-    */
+
     var svg = d3.select('.pieChartSVG')
         .attr('width', width)
         .attr('height', height)
@@ -61,8 +57,6 @@ function showPie(gameName) {
         .attr('width', legendWidth)
           .attr('height', legendHeight)
         .append('g');
-        //.attr('transform', 'translate(' + (legendWidth / 2) +
-            //',' + (legendHeight / 2) + ')');
 
     addTextureDefs(d3.select('.pieChartSVG'));
 
@@ -92,8 +86,9 @@ function showPie(gameName) {
     tooltip.append('div')
         .attr('class', 'pieCount');
 
-    //tooltip.append('div')
-        //.attr('class', 'PiePercent');
+   tooltip.append('div')
+        .html("Click to see his profile");
+
     var path = svg.selectAll('path')
         .data(pie(dataset))
         .enter()
@@ -109,18 +104,15 @@ function showPie(gameName) {
         });
 
     path.on('mouseover', function(d) {
-        var total = d3.sum(dataset.map(function(d) {
-            return (d.enabled) ? d.count : 0;
-        }));
-        var percent = Math.round(1000 * d.data.count / total) / 10;
+
+      d3.select(this).attr("fill-opacity", "0.7"); //highlight
         tooltip.select('.pieAvatar').select('img').attr('src', d.data.avatar).attr('alt', 'Avatar image').attr('class', 'img-responsive');
         tooltip.select('.pieLabel').html(d.data.label);
         if(d.data.count > 1)
           tooltip.select('.pieCount').html(d.data.count + ' hours');
         else
           tooltip.select('.pieCount').html(d.data.count + ' hour');
-        //tooltip.select('.PiePercent').html(percent + '%');
-        tooltip.style('display', 'block').style('width', 150);
+        tooltip.style('display', 'block');
     });
 
     path.on('click', function(d) {
@@ -130,12 +122,13 @@ function showPie(gameName) {
 
     path.on('mouseout', function() {
         tooltip.style('display', 'none');
+        d3.select(this).attr("fill-opacity", "1"); //highlight
     });
 
 
     path.on('mousemove', function(d) {
-        tooltip.style('top', (d3.event.layerY + 10) + 'px')
-            .style('left', (d3.event.layerX + 10) + 'px');
+        tooltip.style('top', (d3.event.layerY + 30) + 'px')
+            .style('left', (d3.event.layerX + 5) + 'px');
     });
 
 
@@ -199,13 +192,13 @@ function showPie(gameName) {
 }
 
 function hidePie() {
-
     clearChart("pieChartContainer", "pieChartSVG");
     clearChart("pieCharLegendContainer", "pieChartLegendSVG");
     d3.select('#pieChartContainer').style('display', 'none');
     d3.select('#pieCharLegendContainer').style('display', 'none');
     d3.select(".pieTooltip").remove();
     app.titlePieChart = "Click on a bar to show some details";
+    app.subTitlePieChart = "";
 }
 
 function parseRawData(gameName) {
@@ -227,20 +220,6 @@ function parseRawData(gameName) {
     });
     return dataset;
 }
-
-function indexOfGame(array, value, comparator) {
-    let i = 0;
-    let toReturn = -1;
-    array.forEach(item => {
-
-        if (comparator(value, item)) {
-            toReturn = i;
-        }
-        i++;
-    });
-    return toReturn;
-}
-
 
 function indexOfGame(array, value, comparator) {
     let i = 0;
