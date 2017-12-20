@@ -32,7 +32,7 @@ var app = new Vue({
             let title = "";
             if (app.isPlayerSTR === 'true') {
                 mapName += "friends";
-                title += "Number of friends who played each game ";
+                title += "Number of friends who have played each game ";
             } else {
                 mapName += "playtime";
                 title += "Your friendlist's total playtime for each game ";
