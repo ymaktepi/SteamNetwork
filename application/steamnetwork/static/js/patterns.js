@@ -161,7 +161,7 @@ function createVStrokes(patternForeground, patternBackground) {
     }
 }
 var listPatternsFunctions = [
-    createVStrokes, createHStrokes, createSquares, createStrokes, createCircles
+    createCircles, createVStrokes, createSquares, createHStrokes, createStrokes
 ];
 
 var lengthFunctions = listPatternsFunctions.length;
