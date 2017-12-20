@@ -3,8 +3,9 @@ function showPie(gameName) {
     d3.select('#pieChartContainer').style('display', 'inline').style('height', "100%");
     d3.select('#pieCharLegendContainer').style('display', 'inline').style('height', "100%");
     let dataset = parseRawData(gameName);
+    
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
-        app.titlePieChart = "TOP 10 of friends playing " + gameName + " since they bought the game";
+        app.titlePieChart = "who have played " + gameName + " since they bought the game";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_2_weeks,
@@ -12,7 +13,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     } else {
-      app.titlePieChart = "TOP 10 of friends playing " + gameName + " during the last two weeks";
+      app.titlePieChart = "who have played " + gameName + " during the last two weeks";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_total,
@@ -20,6 +21,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     }
+    
     app.subTitlePieChart = "Click on the square next to the name to hide the player's record from the graph.";
     dataset = dataset.filter(d => d.count > 0);
     dataset = dataset.sort((a,b)=> b.count - a.count);
@@ -32,7 +34,17 @@ function showPie(gameName) {
         steamId: d.steamId,
         avatar: d.avatar,
     }));
-    dataset = dataset.slice(0,9); //top 10
+    
+    let lenData = dataset.length;
+    dataset = dataset.slice(0,10); //top 10
+    
+    if(dataset.length == lenData)
+    {
+        app.titlePieChart = "Friends "+ app.titlePieChart;
+    }
+    else {
+        app.titlePieChart = "Top 10 of friends "+ app.titlePieChart;
+    }
 
     var width = app.pieChartDiameter;
     var height = app.pieChartDiameter;
