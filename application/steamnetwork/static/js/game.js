@@ -29,7 +29,6 @@ function showPie(gameName) {
         steamId: d.steamId,
         avatar: d.avatar,
     }));
-    console.log(dataset);
 
     app.titlePieChart = "Playtime repartition between friends playing " + gameName;
 
