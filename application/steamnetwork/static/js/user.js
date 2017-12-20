@@ -23,6 +23,7 @@ var app = new Vue({
 
         titleBarChart: "",
         titlePieChart: "Click on a bar to show some details",
+        subTitlePieChart: "",
     },
     methods: {
         updateViewFilter: function(event) {
