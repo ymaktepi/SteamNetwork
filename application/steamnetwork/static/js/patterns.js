@@ -1,7 +1,7 @@
 //var patternForeground = "grey";
 //var patternBackground = "white";
 
-var listPatternsForeground = ['#de2bf2', "#576d62", "#fcb723", "#1eb2ab", "#ff644c", "#16bf4f"];
+var listPatternsForeground = ["#1eb2ab", '#de2bf2', "#576d62", "#fcb723", "#ff644c", "#16bf4f"];
 
 var listPatternsBackground = ["white"]
 
