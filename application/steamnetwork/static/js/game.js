@@ -3,7 +3,7 @@ function showPie(gameName) {
     d3.select('#pieChartContainer').style('display', 'inline').style('height', "100%");
     d3.select('#pieCharLegendContainer').style('display', 'inline').style('height', "100%");
     let dataset = parseRawData(gameName);
-    
+
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
         app.titlePieChart = "who have played " + gameName + " since they bought the game";
         dataset = dataset.map(d => ({
@@ -13,7 +13,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     } else {
-      app.titlePieChart = "who have played " + gameName + " during the last two weeks";
+        app.titlePieChart = "who have played " + gameName + " during the last two weeks";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_total,
@@ -21,29 +21,27 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     }
-    
+
     app.subTitlePieChart = "Click on the square next to the name to hide the player's record from the graph.";
     dataset = dataset.filter(d => d.count > 0);
-    dataset = dataset.sort((a,b)=> b.count - a.count);
+    dataset = dataset.sort((a, b) => b.count - a.count);
 
     // transform into hours
-    dataset = dataset.map(d =>({
+    dataset = dataset.map(d => ({
         label: d.label,
         count: (d.count / 60.0).toFixed(2),
         enabled: true,
         steamId: d.steamId,
         avatar: d.avatar,
     }));
-    
+
     let lenData = dataset.length;
-    dataset = dataset.slice(0,10); //top 10
-    
-    if(dataset.length == lenData)
-    {
-        app.titlePieChart = "Friends "+ app.titlePieChart;
-    }
-    else {
-        app.titlePieChart = "Top 10 of friends "+ app.titlePieChart;
+    dataset = dataset.slice(0, 10); //top 10
+
+    if (dataset.length == lenData) {
+        app.titlePieChart = "Friends " + app.titlePieChart;
+    } else {
+        app.titlePieChart = "Top 10 of friends " + app.titlePieChart;
     }
 
     var width = app.pieChartDiameter;
@@ -56,7 +54,7 @@ function showPie(gameName) {
     var donutWidth = 75;
 
     var color = d3.scaleOrdinal()
-        .range(patternIds.map(id => "url('"+id+"')"));
+        .range(patternIds.map(id => "url('" + id + "')"));
 
     var svg = d3.select('.pieChartSVG')
         .attr('width', width)
@@ -67,7 +65,7 @@ function showPie(gameName) {
     var pieChartLegendSVG = d3.select('.pieChartLegendSVG')
 
         .attr('width', legendWidth)
-          .attr('height', legendHeight)
+        .attr('height', legendHeight)
         .append('g');
 
     addTextureDefs(d3.select('.pieChartSVG'));
@@ -98,7 +96,7 @@ function showPie(gameName) {
     tooltip.append('div')
         .attr('class', 'pieCount');
 
-   tooltip.append('div')
+    tooltip.append('div')
         .html("Click to see his profile");
 
     var path = svg.selectAll('path')
@@ -107,7 +105,7 @@ function showPie(gameName) {
         .append('path')
         .attr('d', arc)
         //.attr("fill", "url('#texCircles1')")
-        .attr('fill', d=> color(d.data.label))
+        .attr('fill', d => color(d.data.label))
         /*function(d, i) {
         return color(d.data.label);
     })*/
@@ -117,18 +115,18 @@ function showPie(gameName) {
 
     path.on('mouseover', function(d) {
 
-      d3.select(this).attr("fill-opacity", "0.7"); //highlight
+        d3.select(this).attr("fill-opacity", "0.7"); //highlight
         tooltip.select('.pieAvatar').select('img').attr('src', d.data.avatar).attr('alt', 'Avatar image').attr('class', 'img-responsive');
         tooltip.select('.pieLabel').html(d.data.label);
-        if(d.data.count > 1)
-          tooltip.select('.pieCount').html(d.data.count + ' hours');
+        if (d.data.count > 1)
+            tooltip.select('.pieCount').html(d.data.count + ' hours');
         else
-          tooltip.select('.pieCount').html(d.data.count + ' hour');
+            tooltip.select('.pieCount').html(d.data.count + ' hour');
         tooltip.style('display', 'block');
     });
 
     path.on('click', function(d) {
-      window.location.href="/user/"+d.data.steamId;
+        window.location.href = "/user/" + d.data.steamId;
     });
 
 
