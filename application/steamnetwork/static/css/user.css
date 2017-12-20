@@ -3,7 +3,7 @@ label
     font-weight: normal;
 }
 .barChartSVG rect {
-  fill: grey;
+  fill: #1Eb2AB;
 }
 
 .barChartSVG text {
