@@ -245,7 +245,6 @@ function drawBarChart(allDatas) {
         .attr("y", 1)
         .attr("rx", 2)
         .attr("ry", 2)
-        //.on("click", data => showPie(data.name))
         .on("click", data => {
             showPie(data.name);
             console.log("couille");
