@@ -245,7 +245,14 @@ function drawBarChart(allDatas) {
         .attr("y", 1)
         .attr("rx", 2)
         .attr("ry", 2)
-        .on("click", data => showPie(data.name));
+        //.on("click", data => showPie(data.name))
+        .on("click", data => {
+            showPie(data.name);
+            console.log("couille");
+            $('html, body').animate({
+                scrollTop: $("#pieCharLegendContainer").offset().top
+            }, 200);
+        });
 
     // text for number of players/hours played
     bar.append("text")
