@@ -1,6 +1,9 @@
 # SteamNetwork
 A docker-based Steam friends network app.
 
+## Documentation
+
+See [this readme](./doc/README.md)
 
 ## Installation
 
