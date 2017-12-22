@@ -48,7 +48,7 @@ The first idea was to create a bubble chart graph with link between bubble. Each
 This idea was abandoned at the beginning of the project because this representation was nicer than effective. In fact we doesn't know how to coroletate the game and the friend in the bubble for have simple information.
 
 The next idea that we have is the chord diagrame 
-![chordDiagrame](/images_wiki/chord diagram.PNG)
+![chordDiagrame](./images_wiki/chord diagram.PNG)
 
 
 
