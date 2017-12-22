@@ -1,6 +1,8 @@
 # SteamNetwork
 A docker-based Steam friends network app.
 
+SteamNetwork is currently deployed [here](https://steam.courgettes.club)
+
 ## Documentation
 
 See [this readme](./doc/README.md)
@@ -46,4 +48,4 @@ See [this readme](./doc/README.md)
     This configuration allows you to have multiple configurations, for example in development/production you'll have to set `DEBUG=False` in `application/.env`.
     Be careful not to put confidential stuff in any file ending with "example", as they are supposed to be versionned on git, and therefore public.
 ## License
-See the LICENSE file.
+See the [LICENSE](./LICENSE) file.
