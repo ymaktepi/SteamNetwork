@@ -44,6 +44,14 @@ The goal of the project is to find friends who consistently play games we own. S
 
 ## Representation
 
+The first idea was to create a bubble chart graph with link between bubble. Each bubble represent a friend with a game that you own, this idea come after exploring the [example](https://naustud.io/tech-stack/) of the [D3](https://github.com/d3/d3/wiki/Gallery) library.
+This idea was abandoned at the beginning of the project because this representation was nicer than effective. In fact we doesn't know how to coroletate the game and the friend in the bubble for have simple information.
+
+The next idea that we have is the chord diagrame 
+![chordDiagrame](/images_wiki/chord diagram.PNG)
+
+
+
 Why pie chart
 Why bar chart
 
