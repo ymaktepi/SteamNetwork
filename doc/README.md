@@ -44,12 +44,33 @@ The goal of the project is to find friends who consistently play games we own. S
 
 ## Representation
 
+At the begining we wanted to have a global overview of the data set to gain an insight about the data set.
+
 The first idea was to create a bubble chart graph with link between bubble. Each bubble represent a friend with a game that you own, this idea come after exploring the [example](https://naustud.io/tech-stack/) of the [D3](https://github.com/d3/d3/wiki/Gallery) library.
 This idea was abandoned at the beginning of the project because this representation was nicer than effective. In fact we doesn't know how to coroletate the game and the friend in the bubble for have simple information.
 
 The next idea that we have is the chord diagrame 
-![chordDiagrame](./images_wiki/chord diagram.PNG)
+![Chord diagram](https://github.com/nichuguen/SteamNetwork/blob/master/Documentation/chord%20diagram.PNG?raw=true)  
+[Source](https://bost.ocks.org/mike/uberdata/)  
 
+this chord diagram represents the frequency of rides between various neighborhoods in San Francisco. The thickness of links be­tween neighborhoods encodes the relative frequency of rides between two neighborhoods: thicker links represent more frequent rides.
+
+### Adaptation for our application:
+* The thickness of links be­tween users and games encodes the absolute playtime for a game. The thicker links represent more playtime. The thickness of links be­tween users is a constant value
+Links are colored blue when it is a link between users and in orange when it is between users and games
+* Links are not directed
+* Blue nodes represent users. Orange nodes represent games
+* We want to clearly separate users side from games side with a blank space
+
+### Critics
+* **Positive**:
+  * We can see everything on one screen
+  * It is simple to interact
+* **Negative**:
+  * There is no link between games
+  * The sickness of the links between users and between users and games is different
+  * Nodes encodes two different data which may be hard to distinguish
+  * The avatar is not displayed
 
 
 Why pie chart
