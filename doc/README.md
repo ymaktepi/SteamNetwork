@@ -1,5 +1,12 @@
 # SteamNetwork - Documentation
 
+## ID's
+
+To test the application you can use the following ids:
+- thegazou
+- rexf25
+- 76561198001403248
+
 ## Data
 
 We used the [Steam Web API](https://developer.valvesoftware.com/wiki/Steam_Web_API) to obtain the raw data for this project.
