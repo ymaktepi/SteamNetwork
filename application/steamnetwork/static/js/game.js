@@ -5,7 +5,7 @@ function showPie(gameName) {
     let dataset = parseRawData(gameName);
 
     if (app.isPlaytimeRangeTwoWeeksSTR === 'true') {
-        app.titlePieChart = "who have played " + gameName + " since they bought the game";
+        app.titlePieChart = "who have played " + gameName + " during the last two weeks";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_2_weeks,
@@ -13,7 +13,7 @@ function showPie(gameName) {
             avatar: d.avatar,
         }));
     } else {
-        app.titlePieChart = "who have played " + gameName + " during the last two weeks";
+        app.titlePieChart = "who have played " + gameName + " since they bought the game";
         dataset = dataset.map(d => ({
             label: d.name,
             count: d.playtime_total,
